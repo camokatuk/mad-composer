@@ -1,7 +1,9 @@
-package org.camokatuk.madcomposer.midi;
+package org.camokatuk.madcomposer.engine;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.camokatuk.madcomposer.midi.DeviceManager;
+import org.camokatuk.madcomposer.midi.MidiScheisse;
 
 public class Engine
 {

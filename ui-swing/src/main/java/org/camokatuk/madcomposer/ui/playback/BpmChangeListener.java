@@ -1,7 +1,7 @@
 package org.camokatuk.madcomposer.ui.playback;
 
-import org.camokatuk.madcomposer.controlroom.EngineControlRoom;
-import org.camokatuk.madcomposer.controlroom.playback.PlaybackController;
+import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
+import org.camokatuk.madcomposer.engine.control.PlaybackController;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

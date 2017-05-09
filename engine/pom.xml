@@ -10,13 +10,18 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ui-swing</artifactId>
+    <artifactId>engine</artifactId>
     <name>${project.artifactId}</name>
 
     <dependencies>
         <dependency>
             <groupId>org.camokatuk.mad-composer</groupId>
-            <artifactId>engine</artifactId>
+            <artifactId>composer</artifactId>
+            <version>${mad.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.camokatuk.mad-composer</groupId>
+            <artifactId>transmitter-midi</artifactId>
             <version>${mad.version}</version>
         </dependency>
     </dependencies>

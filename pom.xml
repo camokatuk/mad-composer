@@ -12,7 +12,7 @@
     <modules>
         <module>composer</module>
         <module>transmitter-midi</module>
-        <module>control-room</module>
+        <module>engine</module>
         <module>ui-swing</module>
     </modules>
 

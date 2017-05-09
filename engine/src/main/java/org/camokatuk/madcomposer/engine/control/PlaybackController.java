@@ -1,6 +1,6 @@
-package org.camokatuk.madcomposer.controlroom.playback;
+package org.camokatuk.madcomposer.engine.control;
 
-import org.camokatuk.madcomposer.midi.Engine;
+import org.camokatuk.madcomposer.engine.Engine;
 
 public class PlaybackController
 {

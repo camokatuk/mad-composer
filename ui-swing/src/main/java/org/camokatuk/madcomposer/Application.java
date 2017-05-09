@@ -1,7 +1,7 @@
 package org.camokatuk.madcomposer;
 
-import org.camokatuk.madcomposer.controlroom.EngineControlRoom;
-import org.camokatuk.madcomposer.midi.Engine;
+import org.camokatuk.madcomposer.engine.Engine;
+import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
 import org.camokatuk.madcomposer.ui.View;
 
 public class Application

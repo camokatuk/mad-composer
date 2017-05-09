@@ -1,9 +1,8 @@
-package org.camokatuk.madcomposer.controlroom;
+package org.camokatuk.madcomposer.engine.control;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.camokatuk.madcomposer.controlroom.playback.PlaybackController;
-import org.camokatuk.madcomposer.midi.Engine;
+import org.camokatuk.madcomposer.engine.Engine;
 
 public class EngineControlRoom
 {

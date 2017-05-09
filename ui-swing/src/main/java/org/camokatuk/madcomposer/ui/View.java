@@ -1,6 +1,6 @@
 package org.camokatuk.madcomposer.ui;
 
-import org.camokatuk.madcomposer.controlroom.EngineControlRoom;
+import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

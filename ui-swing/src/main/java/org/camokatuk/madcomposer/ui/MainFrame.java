@@ -1,6 +1,6 @@
 package org.camokatuk.madcomposer.ui;
 
-import org.camokatuk.madcomposer.controlroom.EngineControlRoom;
+import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
 import org.camokatuk.madcomposer.ui.playback.BpmChangeListener;
 import org.camokatuk.madcomposer.ui.playback.TestListener;
 
