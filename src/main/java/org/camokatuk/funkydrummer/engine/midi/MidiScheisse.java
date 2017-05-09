@@ -1,4 +1,4 @@
-package org.camokatuk.funkydrummer.model.midi;
+package org.camokatuk.funkydrummer.engine.midi;
 
 import javax.sound.midi.*;
 import java.io.IOException;
@@ -7,18 +7,41 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MidiScheisse
 {
     private static final String LOOPBE_DEVICE = "LoopBe Internal MIDI";
+    private final MidiDevice outputDevice;
+    private Receiver receiver = null;
 
-    public void test()
+    private AtomicBoolean stillRunning = new AtomicBoolean(true);
+
+    public MidiScheisse()
     {
-        DeviceManager.listDevicesAndExit(false, true);
+        this.outputDevice = getDevice(LOOPBE_DEVICE);
+    }
 
-        try (MidiDevice outputDevice = getDevice(LOOPBE_DEVICE); Receiver receiver = outputDevice.getReceiver())
+    public void initialize()
+    {
+        try
         {
-            outputDevice.open();
+            this.outputDevice.open();
+            this.receiver = outputDevice.getReceiver();
+        }
+        catch (MidiUnavailableException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void test(int bpm)
+    {
+        stillRunning.set(true);
+        try
+        {
+            if (this.receiver == null)
+            {
+                throw new RuntimeException("Not initialized");
+            }
 
             Sequencer sequencer = MidiSystem.getSequencer(false); // true triggers piano
 
-            AtomicBoolean stillRunning = new AtomicBoolean(true);
             int END_OF_TRACK_MESSAGE = 47;
             sequencer.addMetaEventListener(meta -> {
                 if (meta.getType() == END_OF_TRACK_MESSAGE)
@@ -28,9 +51,9 @@ public class MidiScheisse
             });
 
             sequencer.setSequence(MidiSystem.getSequence(MidiScheisse.class.getResourceAsStream("/X2.mid")));
-            sequencer.getTransmitter().setReceiver(receiver);
+            sequencer.getTransmitter().setReceiver(this.receiver);
             sequencer.open();
-            sequencer.setTempoInBPM(167);
+            sequencer.setTempoInBPM(bpm);
             sequencer.setLoopStartPoint(0);
             sequencer.setLoopEndPoint(-1);
             sequencer.setLoopCount(0);
@@ -47,9 +70,9 @@ public class MidiScheisse
             {
 
             }
-            receiver.close();
+            sequencer.stop();
+            //            receiver.close();
             sequencer.close();
-
         }
         catch (MidiUnavailableException e)
         {
@@ -68,6 +91,12 @@ public class MidiScheisse
             e.printStackTrace();
         }
 
+    }
+
+    public void destroy()
+    {
+        this.receiver.close();
+        this.outputDevice.close();
     }
 
     private static MidiDevice getDevice(String name)

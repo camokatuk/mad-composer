@@ -1,23 +1,39 @@
 package org.camokatuk.funkydrummer.ui;
 
-import org.camokatuk.funkydrummer.control.PlaybackListener;
+import org.camokatuk.funkydrummer.control.EngineControlRoom;
+import org.camokatuk.funkydrummer.ui.playback.BpmChangeListener;
+import org.camokatuk.funkydrummer.ui.playback.TestListener;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class MainFrame extends JFrame
 {
-    public MainFrame() throws HeadlessException
+    private final EngineControlRoom controlRoom;
+
+    public MainFrame(EngineControlRoom controlRoom)
     {
-        this.addWindowListener(new FunkyWindowAdapter());
-        this.addPlaybackControls();
+        this.controlRoom = controlRoom;
+        this.initialize();
+    }
+
+    private void initialize()
+    {
+        this.addPlaybackControls(controlRoom);
         this.pack();
     }
 
-    private void addPlaybackControls()
+    private void addPlaybackControls(EngineControlRoom controlRoom)
     {
+        final JToolBar toolBar = new JToolBar();
+
+        JTextField textField = new JTextField(Integer.toString(controlRoom.getStateMonitor().getBpm()), 3);
+        textField.getDocument().addDocumentListener(new BpmChangeListener(controlRoom));
+        toolBar.add(textField);
+
         JButton button = new JButton("Test");
-        button.addActionListener(new PlaybackListener());
-        this.getContentPane().add(button);
+        button.addActionListener(new TestListener(controlRoom));
+        toolBar.add(button);
+
+        this.getContentPane().add(toolBar);
     }
 }

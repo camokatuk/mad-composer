@@ -1,15 +1,19 @@
 package org.camokatuk.funkydrummer;
 
-import org.camokatuk.funkydrummer.ui.MainFrame;
+import org.camokatuk.funkydrummer.control.EngineControlRoom;
+import org.camokatuk.funkydrummer.engine.Engine;
+import org.camokatuk.funkydrummer.ui.View;
 
 public class Application
 {
     public static void main(String[] sd)
     {
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame();
-            mainFrame.setLocationRelativeTo(null);
-            mainFrame.setVisible(true);
-        });
+        Engine engine = new Engine();
+        engine.start();
+
+        EngineControlRoom controlRoom = new EngineControlRoom(engine);
+
+        View view = new View(controlRoom);
+        view.initialize();
     }
 }

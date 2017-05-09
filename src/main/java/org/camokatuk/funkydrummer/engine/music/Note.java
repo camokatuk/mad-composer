@@ -1,4 +1,4 @@
-package org.camokatuk.funkydrummer.model.music;
+package org.camokatuk.funkydrummer.engine.music;
 
 import java.util.Arrays;
 

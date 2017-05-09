@@ -1,4 +1,4 @@
-package org.camokatuk.funkydrummer.model.midi;
+package org.camokatuk.funkydrummer.engine.midi;
 
 /*
  *	DeviceManager.java
