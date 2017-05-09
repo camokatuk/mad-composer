@@ -7,17 +7,18 @@ import java.awt.event.WindowEvent;
 
 public class View
 {
-    private EngineControlRoom engineControlRoom;
+    private final EngineControlRoom engineControlRoom;
+    private final MainFrame mainFrame;
 
     public View(EngineControlRoom engineControlRoom)
     {
         this.engineControlRoom = engineControlRoom;
+        this.mainFrame = new MainFrame(engineControlRoom);
     }
 
     public void initialize()
     {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame(engineControlRoom);
             mainFrame.setLocationRelativeTo(null);
             mainFrame.setVisible(true);
             mainFrame.addWindowListener(new WindowAdapter()
@@ -25,11 +26,16 @@ public class View
                 @Override
                 public void windowClosing(WindowEvent e)
                 {
-                    System.out.println("Closed");
-                    engineControlRoom.stopEngine();
-                    mainFrame.dispose();
+                    destroy();
                 }
             });
         });
     }
+
+    public void destroy()
+    {
+        engineControlRoom.stopEngine();
+        mainFrame.dispose();
+    }
+
 }

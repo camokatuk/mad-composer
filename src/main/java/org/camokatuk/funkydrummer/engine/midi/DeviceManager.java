@@ -39,6 +39,9 @@ package org.camokatuk.funkydrummer.engine.midi;
 |<---            this code is formatted to fit into 80 columns             --->|
 */
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
@@ -49,6 +52,8 @@ import javax.sound.midi.MidiUnavailableException;
  */
 public class DeviceManager
 {
+    private static final Logger LOGGER = LogManager.getLogger(DeviceManager.class);
+
     /**
      * TODO:
      * todo: flag long
@@ -173,6 +178,6 @@ public class DeviceManager
 
     private static void out(String strMessage)
     {
-        System.out.println(strMessage);
+        LOGGER.info(strMessage);
     }
 }

@@ -9,9 +9,9 @@ public class Application
     public static void main(String[] sd)
     {
         Engine engine = new Engine();
-        engine.start();
-
         EngineControlRoom controlRoom = new EngineControlRoom(engine);
+
+        controlRoom.startEngine();
 
         View view = new View(controlRoom);
         view.initialize();
