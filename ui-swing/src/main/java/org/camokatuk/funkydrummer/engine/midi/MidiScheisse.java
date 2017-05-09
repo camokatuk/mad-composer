@@ -1,28 +1,37 @@
 package org.camokatuk.funkydrummer.engine.midi;
 
-import javax.sound.midi.*;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.ShortMessage;
+
 public class MidiScheisse
 {
-    private static final String LOOPBE_DEVICE = "LoopBe Internal MIDI";
-    private final MidiDevice outputDevice;
-    private Receiver receiver = null;
+	private static final String FALLBACK_DEVICE = "Microsoft GS Wavetable Synth";
+	private static final String LOOPBE_DEVICE = "LoopBe Internal MIDI";
+	private MidiDevice outputDevice;
+	private Receiver receiver = null;
 
     private AtomicBoolean stillRunning = new AtomicBoolean(true);
 
     public MidiScheisse()
     {
-        this.outputDevice = getDevice(LOOPBE_DEVICE);
+
     }
 
     public void initialize()
     {
         try
         {
-            this.outputDevice.open();
-            this.receiver = outputDevice.getReceiver();
+	        this.outputDevice = getDevice(LOOPBE_DEVICE);
+	        this.outputDevice.open();
+	        this.receiver = outputDevice.getReceiver();
         }
         catch (MidiUnavailableException e)
         {
@@ -102,6 +111,13 @@ public class MidiScheisse
     private static MidiDevice getDevice(String name)
     {
         MidiDevice.Info info = DeviceManager.getMidiDeviceInfo(name, true);
+
+	    if (info == null)
+	    {
+		    // falling back to default ms midi synth
+		    info = DeviceManager.getMidiDeviceInfo(FALLBACK_DEVICE, true);
+	    }
+
         try
         {
             return MidiSystem.getMidiDevice(info);
