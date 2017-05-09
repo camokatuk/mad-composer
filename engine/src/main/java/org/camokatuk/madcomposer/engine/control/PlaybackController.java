@@ -13,11 +13,11 @@ public class PlaybackController
 
     public void setBpm(int bpm)
     {
-        this.engine.setBpm(bpm);
+        this.engine.getMidiSpammer().getMidiGenerator().setBpm(bpm);
     }
 
     public void test()
     {
-        this.engine.test();
+        this.engine.getMidiSpammer().getMidiGenerator().test();
     }
 }

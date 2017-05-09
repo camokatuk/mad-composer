@@ -4,7 +4,7 @@ import org.camokatuk.madcomposer.engine.Engine;
 import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
 import org.camokatuk.madcomposer.ui.View;
 
-public class Application
+public class Main
 {
     public static void main(String[] sd)
     {

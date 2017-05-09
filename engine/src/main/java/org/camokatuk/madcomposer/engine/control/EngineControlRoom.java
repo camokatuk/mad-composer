@@ -15,6 +15,11 @@ public class EngineControlRoom
         this.engine = engine;
     }
 
+    public MidiSpammerController getMidiSpammerController()
+    {
+        return new MidiSpammerController(engine.getMidiSpammer());
+    }
+
     public PlaybackController getPlaybackController()
     {
         return new PlaybackController(engine);
@@ -27,15 +32,11 @@ public class EngineControlRoom
 
     public void startEngine()
     {
-        LOGGER.info("Starting engine...");
         engine.start();
-        LOGGER.info("Engine is started");
     }
 
     public void stopEngine()
     {
-        LOGGER.info("Stopping engine...");
         engine.stop();
-        LOGGER.info("Engine is stopped");
     }
 }

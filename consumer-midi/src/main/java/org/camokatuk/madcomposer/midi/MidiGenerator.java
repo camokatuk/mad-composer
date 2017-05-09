@@ -1,38 +1,67 @@
 package org.camokatuk.madcomposer.midi;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.sound.midi.*;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class MidiScheisse
+public class MidiGenerator
 {
-    private static final String FALLBACK_DEVICE = "Microsoft GS Wavetable Synth";
-    private static final String LOOPBE_DEVICE = "LoopBe Internal MIDI";
-    private MidiDevice outputDevice;
+    private static final Logger LOGGER = LogManager.getLogger(MidiGenerator.class);
+
+    private MidiDevice currentDevice = null;
     private Receiver receiver = null;
+
+    private int bpm = 167;
 
     private AtomicBoolean stillRunning = new AtomicBoolean(true);
 
-    public MidiScheisse()
+    public MidiGenerator()
     {
 
     }
 
-    public void initialize()
+    public void initialize(MidiDevice device, MidiDevice fallbackDevice) throws MidiUnavailableException
     {
         try
         {
-            this.outputDevice = getDevice(LOOPBE_DEVICE);
-            this.outputDevice.open();
-            this.receiver = outputDevice.getReceiver();
+            this.startUsing(device);
         }
         catch (MidiUnavailableException e)
         {
-            throw new RuntimeException(e);
+            LOGGER.error("Failed to obtain receiver from " + device.getDeviceInfo().getName() + ", falling back to " + fallbackDevice.getDeviceInfo().getName());
+            this.startUsing(fallbackDevice);
         }
     }
 
-    public void test(int bpm)
+    public void switchDeviceTo(MidiDevice device) throws MidiUnavailableException
+    {
+        this.stopWorkingWithCurrentDevice();
+        this.startUsing(device);
+    }
+
+    private void startUsing(MidiDevice device) throws MidiUnavailableException
+    {
+        this.currentDevice = device;
+        this.currentDevice.open();
+        this.receiver = currentDevice.getReceiver();
+        LOGGER.info("Using " + device.getDeviceInfo().getName());
+    }
+
+    private void stopWorkingWithCurrentDevice()
+    {
+        this.receiver.close();
+        this.currentDevice.close();
+    }
+
+    public void destroy()
+    {
+        this.stopWorkingWithCurrentDevice();
+    }
+
+    public void test()
     {
         stillRunning.set(true);
         try
@@ -52,7 +81,7 @@ public class MidiScheisse
                 }
             });
 
-            sequencer.setSequence(MidiSystem.getSequence(MidiScheisse.class.getResourceAsStream("/X2.mid")));
+            sequencer.setSequence(MidiSystem.getSequence(MidiGenerator.class.getResourceAsStream("/X2.mid")));
             sequencer.getTransmitter().setReceiver(this.receiver);
             sequencer.open();
             sequencer.setTempoInBPM(bpm);
@@ -95,33 +124,7 @@ public class MidiScheisse
 
     }
 
-    public void destroy()
-    {
-        this.receiver.close();
-        this.outputDevice.close();
-    }
-
-    private static MidiDevice getDevice(String name)
-    {
-        MidiDevice.Info info = DeviceManager.getMidiDeviceInfo(name, true);
-
-        if (info == null)
-        {
-            // falling back to default ms midi synth
-            info = DeviceManager.getMidiDeviceInfo(FALLBACK_DEVICE, true);
-        }
-
-        try
-        {
-            return MidiSystem.getMidiDevice(info);
-        }
-        catch (MidiUnavailableException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void playNote(Receiver receiver, MidiNote midiNote)
+    public void playNote(MidiNote midiNote)
     {
         int nChannel = 1;
 
@@ -179,14 +182,28 @@ public class MidiScheisse
         out("...sent");
     }
 
+    public int getBpm()
+    {
+        return bpm;
+    }
+
+    public void setBpm(int bpm)
+    {
+        this.bpm = bpm;
+    }
 
     private static void out(String strMessage)
     {
         System.out.println(strMessage);
     }
+
+    public MidiDevice getCurrentDevice()
+    {
+        return currentDevice;
+    }
 }
 
 
 /***
- * MidiScheisse.java
+ * MidiGenerator.java
  ***/

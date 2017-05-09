@@ -2,41 +2,38 @@ package org.camokatuk.madcomposer.engine;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.camokatuk.madcomposer.midi.DeviceManager;
-import org.camokatuk.madcomposer.midi.MidiScheisse;
+import org.camokatuk.madcomposer.midi.MidiSpammer;
+
+import javax.sound.midi.MidiUnavailableException;
 
 public class Engine
 {
     private static final Logger LOGGER = LogManager.getLogger(Engine.class);
 
-    private MidiScheisse midiScheisse = new MidiScheisse();
-    private int bpm = 167;
+    private MidiSpammer midiSpammer = new MidiSpammer();
 
     public void start()
     {
-        DeviceManager.listDevicesAndExit(false, true);
-        midiScheisse.initialize();
+        LOGGER.info("Starting engine...");
+        try
+        {
+            midiSpammer.initialize();
+        }
+        catch (MidiUnavailableException e)
+        {
+            throw new EngineFatalException("Failed to start midi spammer even with default device", e);
+        }
+        LOGGER.info("Engine started");
     }
 
     public void stop()
     {
-        midiScheisse.destroy();
+        LOGGER.info("Stopping engine...");
+        midiSpammer.getMidiGenerator().destroy();
     }
 
-    public void setBpm(int bpm)
+    public MidiSpammer getMidiSpammer()
     {
-        this.bpm = bpm;
+        return midiSpammer;
     }
-
-    public int getBpm()
-    {
-        return bpm;
-    }
-
-    public void test()
-    {
-        midiScheisse.test(bpm);
-    }
-
-
 }
