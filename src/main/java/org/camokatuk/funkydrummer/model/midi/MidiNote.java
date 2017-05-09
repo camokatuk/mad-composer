@@ -1,4 +1,6 @@
-package org.camokatuk.funkydrummer;
+package org.camokatuk.funkydrummer.model.midi;
+
+import org.camokatuk.funkydrummer.model.music.Note;
 
 public class MidiNote
 {

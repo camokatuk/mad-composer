@@ -1,4 +1,4 @@
-package org.camokatuk.funkydrummer;
+package org.camokatuk.funkydrummer.model.midi;
 
 import javax.sound.midi.*;
 import java.io.IOException;
@@ -8,7 +8,7 @@ public class MidiScheisse
 {
     private static final String LOOPBE_DEVICE = "LoopBe Internal MIDI";
 
-    public static void main(String[] args)
+    public void test()
     {
         DeviceManager.listDevicesAndExit(false, true);
 
@@ -16,7 +16,7 @@ public class MidiScheisse
         {
             outputDevice.open();
 
-            Sequencer sequencer = MidiSystem.getSequencer(true); // true triggers piano
+            Sequencer sequencer = MidiSystem.getSequencer(false); // true triggers piano
 
             AtomicBoolean stillRunning = new AtomicBoolean(true);
             int END_OF_TRACK_MESSAGE = 47;
