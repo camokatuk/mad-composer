@@ -6,37 +6,37 @@ import org.camokatuk.madcomposer.engine.Engine;
 
 public class EngineControlRoom
 {
-    private static final Logger LOGGER = LogManager.getLogger(EngineControlRoom.class);
+	private static final Logger LOGGER = LogManager.getLogger(EngineControlRoom.class);
 
-    private final Engine engine;
+	private final Engine engine;
 
-    public EngineControlRoom(Engine engine)
-    {
-        this.engine = engine;
-    }
+	public EngineControlRoom(Engine engine)
+	{
+		this.engine = engine;
+	}
 
-    public MidiSpammerController getMidiSpammerController()
-    {
-        return new MidiSpammerController(engine.getMidiSpammer());
-    }
+	public MidiSpammerController getMidiSpammerController()
+	{
+		return new MidiSpammerController(engine.getMidiSpammer());
+	}
 
-    public PlaybackController getPlaybackController()
-    {
-        return new PlaybackController(engine);
-    }
+	public PlaybackController getPlaybackController()
+	{
+		return new PlaybackController(engine);
+	}
 
-    public StateMonitor getStateMonitor()
-    {
-        return new StateMonitor(engine);
-    }
+	public StateMonitor getStateMonitor()
+	{
+		return new StateMonitor(engine);
+	}
 
-    public void startEngine()
-    {
-        engine.start();
-    }
+	public void startEngine()
+	{
+		engine.start();
+	}
 
-    public void stopEngine()
-    {
-        engine.stop();
-    }
+	public void stopEngine()
+	{
+		engine.stop();
+	}
 }
