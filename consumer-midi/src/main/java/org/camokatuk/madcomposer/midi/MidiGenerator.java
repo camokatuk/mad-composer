@@ -30,38 +30,64 @@ public class MidiGenerator
 
 	}
 
-	public void initialize(MidiDevice device, MidiDevice fallbackDevice) throws MidiUnavailableException
+	public void initialize(MidiDevice... devices)
 	{
+		for (MidiDevice device : devices)
+		{
+			if (trySwitchingDeviceTo(device))
+			{
+				break;
+			}
+		}
+	}
+
+	public boolean trySwitchingDeviceTo(MidiDevice newDevice)
+	{
+		if (newDevice == null)
+		{
+			return false;
+		}
+
+		if (currentDevice == newDevice)
+		{
+			// just keep using it
+			return true;
+		}
+
+		LOGGER.info("Checking device: " + newDevice.getDeviceInfo().getName() + "...");
 		try
 		{
-			this.startUsing(device);
+			newDevice.open();
+			Receiver newReceiver = newDevice.getReceiver();
+
+			// if we didn't crash yet, new device works, and we can discard current device and reassign fields
+			this.stopWorkingWithCurrentDevice();
+			this.currentDevice = newDevice;
+			this.receiver = newReceiver;
+			LOGGER.info(newDevice.getDeviceInfo().getName() + " works!");
 		}
 		catch (MidiUnavailableException e)
 		{
-			LOGGER.error("Failed to obtain receiver from " + device.getDeviceInfo().getName() + ", falling back to " + fallbackDevice.getDeviceInfo()
-				.getName());
-			this.startUsing(fallbackDevice);
+			newDevice.close(); // in case we died after opening new device
+			LOGGER.warn("Skipping " + newDevice.getDeviceInfo().getName() + "(" + e.getMessage() + ")");
+			return false;
 		}
-	}
 
-	public void switchDeviceTo(MidiDevice device) throws MidiUnavailableException
-	{
-		this.stopWorkingWithCurrentDevice();
-		this.startUsing(device);
-	}
-
-	private void startUsing(MidiDevice device) throws MidiUnavailableException
-	{
-		this.currentDevice = device;
-		this.currentDevice.open();
-		this.receiver = currentDevice.getReceiver();
-		LOGGER.info("Using " + device.getDeviceInfo().getName());
+		return true;
 	}
 
 	private void stopWorkingWithCurrentDevice()
 	{
-		this.receiver.close();
-		this.currentDevice.close();
+		if (this.receiver != null)
+		{
+			this.receiver.close();
+			this.receiver = null;
+		}
+		if (this.currentDevice != null)
+		{
+			this.currentDevice.close();
+			this.currentDevice = null;
+		}
 	}
 
 	public void destroy()
@@ -139,8 +165,8 @@ public class MidiGenerator
 		int nDuration = midiNote.getDurationMillis();
 
 		out("Receiver: " + receiver);
-	    /*	Here, we prepare the MIDI messages to send.
-            Obviously, one is for turning the key on and
+		/*	Here, we prepare the MIDI messages to send.
+		    Obviously, one is for turning the key on and
 			one for turning it off.
 		*/
 		ShortMessage onMessage = null;
@@ -161,14 +187,14 @@ public class MidiGenerator
 		}
 
 		/*
-         *	Turn the note on
+		 *	Turn the note on
 		 */
 		out("sending on message...");
 		receiver.send(onMessage, -1);
 		out("...sent");
 
 		/*
-         *	Wait for the specified amount of time
+		 *	Wait for the specified amount of time
 		 *	(the duration of the note).
 		 */
 		try
@@ -181,7 +207,7 @@ public class MidiGenerator
 		}
 
 		/*
-         *	Turn the note off.
+		 *	Turn the note off.
 		 */
 		out("sending off message...");
 		receiver.send(offMessage, -1);

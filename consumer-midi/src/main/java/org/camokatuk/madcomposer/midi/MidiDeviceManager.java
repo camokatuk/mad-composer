@@ -65,7 +65,6 @@ public class MidiDeviceManager
 
 	public MidiDevice getOutputDevice(String name)
 	{
-		this.rescanDevices();
 		return outputDevices.get(name);
 	}
 }

@@ -15,12 +15,8 @@ public class MidiSpammer implements ScoreConsumer
 
 	public void initialize() throws MidiUnavailableException
 	{
+		deviceManager.rescanDevices();
 		midiGenerator.initialize(deviceManager.getOutputDevice(DEFAULT_DEVICE), deviceManager.getOutputDevice(FALLBACK_DEVICE));
-	}
-
-	public void switchDeviceTo(String name) throws MidiUnavailableException
-	{
-		midiGenerator.switchDeviceTo(deviceManager.getOutputDevice(name));
 	}
 
 	public MidiGenerator getMidiGenerator()
@@ -33,8 +29,8 @@ public class MidiSpammer implements ScoreConsumer
 		return deviceManager;
 	}
 
-	public void switchDeviceTo(MidiDevice device) throws MidiUnavailableException
+	public boolean trySwitchingDeviceTo(MidiDevice device)
 	{
-		midiGenerator.switchDeviceTo(device);
+		return midiGenerator.trySwitchingDeviceTo(device);
 	}
 }

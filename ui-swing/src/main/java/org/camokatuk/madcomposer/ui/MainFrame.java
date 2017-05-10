@@ -1,6 +1,6 @@
 package org.camokatuk.madcomposer.ui;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.sound.midi.MidiDevice;
 import javax.swing.DefaultListCellRenderer;
@@ -49,15 +49,21 @@ public class MainFrame extends JFrame
 
 	private JComboBox constructDeviceSelector()
 	{
-		Collection<MidiDevice> devices = controlRoom.getMidiSpammerController().listMidiDevices();
+		List<MidiDevice> devices = controlRoom.getMidiSpammerController().listMidiDevices();
+		devices.add(0, null);
 		JComboBox<MidiDevice> selector = new JComboBox<>(devices.toArray(new MidiDevice[devices.size()]));
-		selector.setSelectedItem(controlRoom.getMidiSpammerController().getDefaultDevice());
+		selector.setSelectedItem(controlRoom.getMidiSpammerController().getCurrentDevice());
 
 		DefaultListCellRenderer defaultListCellRenderer = new DefaultListCellRenderer();
-		selector.setRenderer((list, value, index, isSelected, cellHasFocus) -> defaultListCellRenderer
-			.getListCellRendererComponent(list, value.getDeviceInfo().getName(), index, isSelected, cellHasFocus));
+		selector.setRenderer((list, midiDevice, index, isSelected, cellHasFocus) -> defaultListCellRenderer
+			.getListCellRendererComponent(list, midiDevice == null ? "-- Select device --" : midiDevice.getDeviceInfo().getName(), index, isSelected,
+				cellHasFocus));
 		selector.addActionListener(e -> {
-			controlRoom.getMidiSpammerController().switchDeviceTo((MidiDevice) selector.getSelectedItem());
+			boolean switchSuccessful = controlRoom.getMidiSpammerController().trySwitchingDeviceTo((MidiDevice) selector.getSelectedItem());
+			if (!switchSuccessful)
+			{
+				selector.setSelectedItem(controlRoom.getMidiSpammerController().getCurrentDevice());
+			}
 		});
 		return selector;
 	}
