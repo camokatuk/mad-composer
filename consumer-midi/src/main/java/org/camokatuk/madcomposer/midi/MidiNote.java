@@ -7,7 +7,7 @@ public class MidiNote
 	private final Note note;
 	private final int velocity;
 	        /*
-         *	Time between note on and note off event in
+	     *	Time between note on and note off event in
 		 *	milliseconds. Note that on most systems, the
 		 *	best resolution you can expect are 10 ms.
 		 */
@@ -34,5 +34,15 @@ public class MidiNote
 	public int getDurationMillis()
 	{
 		return durationMillis;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "MidiNote{" +
+			"note=" + note +
+			", velocity=" + velocity +
+			", durationMillis=" + durationMillis +
+			'}';
 	}
 }

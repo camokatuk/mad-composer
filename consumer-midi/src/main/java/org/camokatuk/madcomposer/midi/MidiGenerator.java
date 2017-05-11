@@ -1,29 +1,138 @@
 package org.camokatuk.madcomposer.midi;
 
-import java.io.IOException;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
+import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.sun.media.sound.MidiUtils;
+
 public class MidiGenerator
 {
+	private class Runnable implements java.lang.Runnable
+	{
+		private static final int PPQ = 96;
+		private final Receiver receiver;
+		private final int bpm;
+
+		public Runnable(Receiver receiver, int bpm)
+		{
+			this.receiver = receiver;
+			this.bpm = bpm;
+		}
+
+		@Override
+		public void run()
+		{
+			try
+			{
+
+				LOGGER.info("Starting thread at " + bpm + " bpm");
+
+				Sequencer sequencer = MidiSystem.getSequencer(false); // true triggers piano
+
+				Sequence sequence = new Sequence(Sequence.PPQ, PPQ);
+
+				Sequence fileSequence = MidiSystem.getSequence(MidiGenerator.class.getResourceAsStream("/X2.mid"));
+
+				Track track0 = fileSequence.getTracks()[0];
+				Track newTrack = sequence.createTrack();
+				for (int i = 0; i < track0.size(); i++)
+				{
+					MidiEvent event = track0.get(i);
+					LOGGER.info(event.getMessage());
+
+					if (!MidiUtils.isMetaEndOfTrack(event.getMessage()))
+					{
+						newTrack.add(event);
+					}
+
+				}
+
+				sequencer.setSequence(sequence);
+				sequencer.getTransmitter().setReceiver(receiver);
+				sequencer.open();
+				sequencer.setTempoInBPM(bpm);
+				sequencer.setMasterSyncMode(Sequencer.SyncMode.MIDI_SYNC);
+				sequencer.start();
+
+				while (running.get())
+				{
+					while (!noteQueue.isEmpty())
+					{
+						try
+						{
+							MidiNote note = noteQueue.take();
+							LOGGER.info("New note " + note);
+							injectNoteNow(sequencer, note);
+						}
+						catch (InvalidMidiDataException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				}
+
+				LOGGER.info("Stopping thread");
+
+				sequencer.stop();
+				sequencer.close();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			finally
+			{
+				// TODO ... release
+			}
+		}
+
+		private void injectNoteNow(Sequencer sequencer, MidiNote note) throws InvalidMidiDataException
+		{
+			ShortMessage onMessage = new ShortMessage();
+			onMessage.setMessage(ShortMessage.NOTE_ON, 0, note.getNote().getMidiIndex(), note.getVelocity());
+
+			ShortMessage offMessage = new ShortMessage();
+			offMessage.setMessage(ShortMessage.NOTE_OFF, 0, note.getNote().getMidiIndex(), 0);
+
+			long cur = sequencer.getTickPosition();
+			sequencer.getSequence().getTracks()[0].add(new MidiEvent(onMessage, cur + delay));
+			sequencer.getSequence().getTracks()[0].add(new MidiEvent(offMessage, cur + delay + ticksPerMilliseconds(note.getDurationMillis())));
+		}
+
+		private long ticksPerMilliseconds(int millis)
+		{
+			long ticksPerMinute = PPQ * bpm;
+			LOGGER.info((ticksPerMinute * millis / 60000));
+			return (ticksPerMinute * millis / 60000);
+		}
+	}
+
 	private static final Logger LOGGER = LogManager.getLogger(MidiGenerator.class);
+
+	private final AtomicBoolean running = new AtomicBoolean(false);
+	private volatile int delay = 0;
 
 	private MidiDevice currentDevice = null;
 	private Receiver receiver = null;
 
+	private Thread activeThread;
+	private BlockingQueue<MidiNote> noteQueue = new LinkedBlockingQueue<>();
 	private int bpm = 167;
-
-	private AtomicBoolean stillRunning = new AtomicBoolean(true);
 
 	public MidiGenerator()
 	{
@@ -92,126 +201,52 @@ public class MidiGenerator
 
 	public void destroy()
 	{
+		this.stopGenerating();
 		this.stopWorkingWithCurrentDevice();
 	}
 
-	public void test()
+	public synchronized void startGenerating()
 	{
-		stillRunning.set(true);
-		try
+		if (running.get())
 		{
-			if (this.receiver == null)
+			running.set(false);
+			try
 			{
-				throw new RuntimeException("Not initialized");
+				activeThread.wait();
 			}
-
-			Sequencer sequencer = MidiSystem.getSequencer(false); // true triggers piano
-
-			int END_OF_TRACK_MESSAGE = 47;
-			sequencer.addMetaEventListener(meta -> {
-				if (meta.getType() == END_OF_TRACK_MESSAGE)
-				{
-					stillRunning.set(false);
-				}
-			});
-
-			sequencer.setSequence(MidiSystem.getSequence(MidiGenerator.class.getResourceAsStream("/X2.mid")));
-			sequencer.getTransmitter().setReceiver(this.receiver);
-			sequencer.open();
-			sequencer.setTempoInBPM(bpm);
-			sequencer.setLoopStartPoint(0);
-			sequencer.setLoopEndPoint(-1);
-			sequencer.setLoopCount(0);
-			sequencer.setMasterSyncMode(Sequencer.SyncMode.MIDI_SYNC);
-			sequencer.start();
-
-			//            playNote(receiver, new MidiNote(new Note("C", 1), 127, 1000));
-			//            playNote(receiver, new MidiNote(new Note("C", 1), 127, 1000));
-			//            playNote(receiver, new MidiNote(new Note("C", 1), 127, 1000));
-
-			while (stillRunning.get())
+			catch (InterruptedException e)
 			{
-
+				e.printStackTrace();
 			}
-			sequencer.stop();
-			//            receiver.close();
-			sequencer.close();
 		}
-		catch (MidiUnavailableException e)
+		if (receiver == null)
 		{
-			throw new RuntimeException(e);
-		}
-		catch (InvalidMidiDataException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
+			throw new RuntimeException("Not initialized");
 		}
 
+		activeThread = new Thread(new Runnable(receiver, bpm));
+		running.set(true);
+		activeThread.start();
 	}
 
-	public void playNote(MidiNote midiNote)
+	public synchronized void stopGenerating()
 	{
-		int nChannel = 1;
+		if (activeThread != null)
+		{
+			running.set(false);
+		}
+	}
 
-		int nKey = midiNote.getNote().getMidiIndex();
-		int nVelocity = midiNote.getVelocity();
-		int nDuration = midiNote.getDurationMillis();
-
-		out("Receiver: " + receiver);
-		/*	Here, we prepare the MIDI messages to send.
-		    Obviously, one is for turning the key on and
-			one for turning it off.
-		*/
-		ShortMessage onMessage = null;
-		ShortMessage offMessage = null;
+	public void triggerNote(MidiNote note)
+	{
 		try
 		{
-			onMessage = new ShortMessage();
-			offMessage = new ShortMessage();
-			onMessage.setMessage(ShortMessage.NOTE_ON, nChannel, nKey, nVelocity);
-			offMessage.setMessage(ShortMessage.NOTE_OFF, nChannel, nKey, 0);
-
-			out("On Msg: " + onMessage.getStatus() + " " + onMessage.getData1() + " " + onMessage.getData2());
-			out("Off Msg: " + offMessage.getStatus() + " " + offMessage.getData1() + " " + offMessage.getData2());
-		}
-		catch (InvalidMidiDataException e)
-		{
-			e.printStackTrace();
-		}
-
-		/*
-		 *	Turn the note on
-		 */
-		out("sending on message...");
-		receiver.send(onMessage, -1);
-		out("...sent");
-
-		/*
-		 *	Wait for the specified amount of time
-		 *	(the duration of the note).
-		 */
-		try
-		{
-			Thread.sleep(nDuration);
+			noteQueue.put(note);
 		}
 		catch (InterruptedException e)
 		{
-			throw new RuntimeException(e);
+			LOGGER.error("Fuck");
 		}
-
-		/*
-		 *	Turn the note off.
-		 */
-		out("sending off message...");
-		receiver.send(offMessage, -1);
-		out("...sent");
 	}
 
 	public int getBpm()
@@ -224,14 +259,14 @@ public class MidiGenerator
 		this.bpm = bpm;
 	}
 
-	private static void out(String strMessage)
-	{
-		System.out.println(strMessage);
-	}
-
 	public MidiDevice getCurrentDevice()
 	{
 		return currentDevice;
+	}
+
+	public synchronized void setDelay(int delay)
+	{
+		this.delay = delay;
 	}
 }
 

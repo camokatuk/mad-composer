@@ -9,10 +9,12 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 
 import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
 import org.camokatuk.madcomposer.ui.playback.BpmChangeListener;
-import org.camokatuk.madcomposer.ui.playback.TestListener;
 
 public class MainFrame extends JFrame
 {
@@ -40,9 +42,53 @@ public class MainFrame extends JFrame
 		textField.getDocument().addDocumentListener(new BpmChangeListener(controlRoom));
 		toolBar.add(textField);
 
-		JButton button = new JButton("Test");
-		button.addActionListener(new TestListener(controlRoom));
-		toolBar.add(button);
+		JButton startButton = new JButton("Play");
+		startButton.addActionListener((e) -> {
+			controlRoom.getPlaybackController().start();
+		});
+		toolBar.add(startButton);
+
+		JButton stopButton = new JButton("Stop");
+		stopButton.addActionListener((e) -> {
+			controlRoom.getPlaybackController().stop();
+		});
+		toolBar.add(stopButton);
+
+		JButton c1Button = new JButton("C1");
+		c1Button.addActionListener((e) -> {
+			controlRoom.getPlaybackController().trigger();
+		});
+		toolBar.add(c1Button);
+
+		JTextField ohffuuu = new JTextField(Integer.toString(controlRoom.getStateMonitor().getBpm()), 3);
+		textField.getDocument().addDocumentListener(new DocumentListener()
+		{
+			@Override
+			public void insertUpdate(DocumentEvent e)
+			{
+				try
+				{
+					controlRoom.getPlaybackController().setDelay(Integer.parseInt(e.getDocument().getText(0, e.getDocument().getLength())));
+				}
+				catch (BadLocationException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e)
+			{
+
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e)
+			{
+
+			}
+		});
+		toolBar.add(ohffuuu);
 
 		this.getContentPane().add(toolBar);
 	}
