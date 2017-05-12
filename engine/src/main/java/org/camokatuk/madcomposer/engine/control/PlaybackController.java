@@ -30,7 +30,8 @@ public class PlaybackController
 
 	public void trigger()
 	{
-		this.engine.getMidiSpammer().getMidiGenerator().triggerNote(new MidiNote(new Note("C", 1), 127, 1000));
+		int ppq = this.engine.getMidiSpammer().getMidiGenerator().getPPQ();
+		this.engine.getMidiSpammer().getMidiGenerator().triggerNote(new MidiNote(new Note("C", 1), 127, ppq));
 	}
 
 	public void setDelay(int delay)

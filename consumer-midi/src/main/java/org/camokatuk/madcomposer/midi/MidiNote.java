@@ -12,13 +12,13 @@ public class MidiNote
 		 *	best resolution you can expect are 10 ms.
 		 */
 
-	private final int durationMillis;
+	private final int durationTicks;
 
-	public MidiNote(Note note, int velocity, int durationMillis)
+	public MidiNote(Note note, int velocity, int durationTicks)
 	{
 		this.note = note;
 		this.velocity = Math.min(127, Math.max(0, velocity));
-		this.durationMillis = Math.max(0, durationMillis);
+		this.durationTicks = Math.max(0, durationTicks);
 	}
 
 	public Note getNote()
@@ -31,18 +31,15 @@ public class MidiNote
 		return velocity;
 	}
 
-	public int getDurationMillis()
+	public int getDurationTicks()
 	{
-		return durationMillis;
+		return durationTicks;
 	}
 
 	@Override
 	public String toString()
 	{
-		return "MidiNote{" +
-			"note=" + note +
-			", velocity=" + velocity +
-			", durationMillis=" + durationMillis +
+		return "MidiNote{" + "note=" + note + ", velocity=" + velocity + ", durationTicks=" + durationTicks +
 			'}';
 	}
 }

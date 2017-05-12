@@ -22,9 +22,10 @@ import com.sun.media.sound.MidiUtils;
 
 public class MidiGenerator
 {
+	private static final int PPQ = 96;
+
 	private class Runnable implements java.lang.Runnable
 	{
-		private static final int PPQ = 96;
 		private final Receiver receiver;
 		private final int bpm;
 
@@ -37,12 +38,13 @@ public class MidiGenerator
 		@Override
 		public void run()
 		{
+			Sequencer sequencer = null;
 			try
 			{
 
 				LOGGER.info("Starting thread at " + bpm + " bpm");
 
-				Sequencer sequencer = MidiSystem.getSequencer(false); // true triggers piano
+				sequencer = MidiSystem.getSequencer(false); // true triggers piano
 
 				Sequence sequence = new Sequence(Sequence.PPQ, PPQ);
 
@@ -69,8 +71,11 @@ public class MidiGenerator
 				sequencer.setMasterSyncMode(Sequencer.SyncMode.MIDI_SYNC);
 				sequencer.start();
 
+				// TODO this fucker actually stops after playing a sequence ... ;(
 				while (running.get())
 				{
+					//					while (sequencer.isRunning())
+					//				{
 					while (!noteQueue.isEmpty())
 					{
 						try
@@ -81,23 +86,27 @@ public class MidiGenerator
 						}
 						catch (InvalidMidiDataException e)
 						{
-							e.printStackTrace();
+							LOGGER.error(e);
 						}
 					}
+					//				}
+					//					sequencer.setTickPosition(0L);
 				}
 
 				LOGGER.info("Stopping thread");
-
-				sequencer.stop();
-				sequencer.close();
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				LOGGER.error(e);
 			}
 			finally
 			{
-				// TODO ... release
+				if (sequencer != null)
+				{
+					LOGGER.info("Closing sequencer");
+					sequencer.stop();
+					sequencer.close();
+				}
 			}
 		}
 
@@ -110,15 +119,9 @@ public class MidiGenerator
 			offMessage.setMessage(ShortMessage.NOTE_OFF, 0, note.getNote().getMidiIndex(), 0);
 
 			long cur = sequencer.getTickPosition();
+			LOGGER.info(cur + delay + " - " + (cur + delay + note.getDurationTicks()));
 			sequencer.getSequence().getTracks()[0].add(new MidiEvent(onMessage, cur + delay));
-			sequencer.getSequence().getTracks()[0].add(new MidiEvent(offMessage, cur + delay + ticksPerMilliseconds(note.getDurationMillis())));
-		}
-
-		private long ticksPerMilliseconds(int millis)
-		{
-			long ticksPerMinute = PPQ * bpm;
-			LOGGER.info((ticksPerMinute * millis / 60000));
-			return (ticksPerMinute * millis / 60000);
+			sequencer.getSequence().getTracks()[0].add(new MidiEvent(offMessage, cur + delay + note.getDurationTicks()));
 		}
 	}
 
@@ -267,6 +270,11 @@ public class MidiGenerator
 	public synchronized void setDelay(int delay)
 	{
 		this.delay = delay;
+	}
+
+	public static int getPPQ()
+	{
+		return PPQ;
 	}
 }
 
