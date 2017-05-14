@@ -4,20 +4,20 @@ import javax.sound.midi.MidiUnavailableException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.camokatuk.madcomposer.midi.MidiSpammer;
+import org.camokatuk.madcomposer.midi.MidiPlayer;
 
 public class Engine
 {
 	private static final Logger LOGGER = LogManager.getLogger(Engine.class);
 
-	private MidiSpammer midiSpammer = new MidiSpammer();
+	private MidiPlayer midiPlayer = new MidiPlayer();
 
 	public void start()
 	{
 		LOGGER.info("Starting engine...");
 		try
 		{
-			midiSpammer.initialize();
+			midiPlayer.initialize();
 		}
 		catch (MidiUnavailableException e)
 		{
@@ -29,11 +29,11 @@ public class Engine
 	public void stop()
 	{
 		LOGGER.info("Stopping engine...");
-		midiSpammer.getMidiGenerator().destroy();
+		midiPlayer.getMidiGenerator().destroy();
 	}
 
-	public MidiSpammer getMidiSpammer()
+	public MidiPlayer getMidiPlayer()
 	{
-		return midiSpammer;
+		return midiPlayer;
 	}
 }

@@ -15,9 +15,9 @@ public class EngineControlRoom
 		this.engine = engine;
 	}
 
-	public MidiSpammerController getMidiSpammerController()
+	public MidiPlayerController getMidiSpammerController()
 	{
-		return new MidiSpammerController(engine.getMidiSpammer());
+		return new MidiPlayerController(engine.getMidiPlayer());
 	}
 
 	public PlaybackController getPlaybackController()

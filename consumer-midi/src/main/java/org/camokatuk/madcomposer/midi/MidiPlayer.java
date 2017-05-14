@@ -3,9 +3,11 @@ package org.camokatuk.madcomposer.midi;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 
-import org.camokatuk.madcomposer.music.ScoreConsumer;
+import org.camokatuk.madcomposer.midi.generator.MidiGenerator;
+import org.camokatuk.madcomposer.music.Bar;
+import org.camokatuk.madcomposer.music.ComposerListener;
 
-public class MidiSpammer implements ScoreConsumer
+public class MidiPlayer implements ComposerListener
 {
 	private static final String FALLBACK_DEVICE = "Microsoft GS Wavetable Synth";
 	private static final String DEFAULT_DEVICE = "LoopBe Internal MIDI";
@@ -33,4 +35,11 @@ public class MidiSpammer implements ScoreConsumer
 	{
 		return midiGenerator.trySwitchingDeviceTo(device);
 	}
+
+	@Override
+	public void consumeBar(Bar bar, int trackId)
+	{
+		midiGenerator.scheduleBar(bar, trackId);
+	}
+
 }

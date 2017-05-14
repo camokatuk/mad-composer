@@ -9,9 +9,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
 
 import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
 import org.camokatuk.madcomposer.ui.playback.BpmChangeListener;
@@ -59,36 +56,6 @@ public class MainFrame extends JFrame
 			controlRoom.getPlaybackController().trigger();
 		});
 		toolBar.add(c1Button);
-
-		JTextField ohffuuu = new JTextField(Integer.toString(controlRoom.getStateMonitor().getBpm()), 3);
-		textField.getDocument().addDocumentListener(new DocumentListener()
-		{
-			@Override
-			public void insertUpdate(DocumentEvent e)
-			{
-				try
-				{
-					controlRoom.getPlaybackController().setDelay(Integer.parseInt(e.getDocument().getText(0, e.getDocument().getLength())));
-				}
-				catch (BadLocationException e1)
-				{
-					e1.printStackTrace();
-				}
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e)
-			{
-
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e)
-			{
-
-			}
-		});
-		toolBar.add(ohffuuu);
 
 		this.getContentPane().add(toolBar);
 	}
