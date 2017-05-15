@@ -5,30 +5,30 @@ import java.util.stream.Collectors;
 
 import javax.sound.midi.MidiDevice;
 
-import org.camokatuk.madcomposer.midi.MidiPlayer;
+import org.camokatuk.madcomposer.engine.midi.MidiInstrument;
 
 public class MidiPlayerController
 {
-	private final MidiPlayer midiPlayer;
+	private final MidiInstrument midiInstrument;
 
-	public MidiPlayerController(MidiPlayer midiPlayer)
+	public MidiPlayerController(MidiInstrument midiInstrument)
 	{
-		this.midiPlayer = midiPlayer;
+		this.midiInstrument = midiInstrument;
 	}
 
 	public List<MidiDevice> listMidiDevices()
 	{
-		return midiPlayer.getDeviceManager().getOutputDevices().values().stream()
+		return midiInstrument.getDeviceManager().getOutputDevices().values().stream()
 			.sorted((d1, d2) -> d1.getDeviceInfo().getName().compareTo(d2.getDeviceInfo().getName())).collect(Collectors.toList());
 	}
 
 	public MidiDevice getCurrentDevice()
 	{
-		return midiPlayer.getMidiGenerator().getCurrentDevice();
+		return midiInstrument.getCurrentDevice();
 	}
 
 	public boolean trySwitchingDeviceTo(MidiDevice selectedItem)
 	{
-		return midiPlayer.trySwitchingDeviceTo(selectedItem);
+		return midiInstrument.trySwitchingDeviceTo(selectedItem);
 	}
 }

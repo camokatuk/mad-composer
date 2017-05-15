@@ -17,7 +17,7 @@ public class EngineControlRoom
 
 	public MidiPlayerController getMidiSpammerController()
 	{
-		return new MidiPlayerController(engine.getMidiPlayer());
+		return new MidiPlayerController(engine.getMidiInstrument());
 	}
 
 	public PlaybackController getPlaybackController()
@@ -32,11 +32,11 @@ public class EngineControlRoom
 
 	public void startEngine()
 	{
-		engine.start();
+		this.engine.initialize();
 	}
 
 	public void stopEngine()
 	{
-		engine.stop();
+		engine.shutdown();
 	}
 }

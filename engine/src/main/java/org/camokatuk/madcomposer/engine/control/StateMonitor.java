@@ -14,6 +14,6 @@ public class StateMonitor
 	// might involve some realtime multithread stuff
 	public int getBpm()
 	{
-		return engine.getMidiPlayer().getMidiGenerator().getBpm();
+		return engine.getMidiInstrument().getBpm();
 	}
 }

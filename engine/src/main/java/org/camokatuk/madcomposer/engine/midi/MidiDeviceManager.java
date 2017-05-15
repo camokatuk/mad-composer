@@ -1,4 +1,4 @@
-package org.camokatuk.madcomposer.midi;
+package org.camokatuk.madcomposer.engine.midi;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

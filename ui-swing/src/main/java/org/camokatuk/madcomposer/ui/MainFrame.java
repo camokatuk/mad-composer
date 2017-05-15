@@ -45,7 +45,7 @@ public class MainFrame extends JFrame
 		});
 		toolBar.add(startButton);
 
-		JButton stopButton = new JButton("Stop");
+		JButton stopButton = new JButton("Pause");
 		stopButton.addActionListener((e) -> {
 			controlRoom.getPlaybackController().stop();
 		});

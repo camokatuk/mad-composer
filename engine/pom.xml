@@ -19,11 +19,6 @@
 			<artifactId>composer</artifactId>
 			<version>${mad.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.camokatuk.mad-composer</groupId>
-			<artifactId>consumer-midi</artifactId>
-			<version>${mad.version}</version>
-		</dependency>
 	</dependencies>
 
 	<build>

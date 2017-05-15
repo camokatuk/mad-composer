@@ -1,4 +1,4 @@
-package org.camokatuk.madcomposer.midi;
+package org.camokatuk.madcomposer.engine.midi;
 
 import org.camokatuk.madcomposer.music.Pitch;
 
@@ -7,7 +7,7 @@ public class MidiNote
 	private final Pitch pitch;
 	private final int velocity;
 	        /*
-	     *	Time between pitch on and pitch off event in
+	     *	TimeKeeper between pitch on and pitch off event in
 		 *	milliseconds. Pitch that on most systems, the
 		 *	best resolution you can expect are 10 ms.
 		 */
