@@ -4,17 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.sound.midi.MidiUnavailableException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.camokatuk.madcomposer.engine.midi.MidiInstrument;
-import org.camokatuk.madcomposer.engine.midi.MidiPlayer;
+import org.camokatuk.madcomposer.engine.midi.MidiMonster;
+import org.camokatuk.madcomposer.engine.midi.MidiTransport;
 import org.camokatuk.madcomposer.music.Bar;
 import org.camokatuk.madcomposer.music.Composer;
 import org.camokatuk.madcomposer.music.Player;
 import org.camokatuk.madcomposer.music.TimeKeeper;
 import org.camokatuk.madcomposer.music.composer.Paradox;
+import org.camokatuk.madcomposer.music.performer.Robot;
 
 public class Engine
 {
@@ -22,7 +22,8 @@ public class Engine
 
 	private Composer composer = new Paradox();
 	private Map<Integer, Player> players = new HashMap<>();
-	private MidiInstrument midiInstrument;
+	private MidiMonster midiMonster;
+	private MidiTransport midiTransport = new MidiTransport();
 
 	private TimeKeeper timeKeeper;
 	private AtomicBoolean running = new AtomicBoolean(false);
@@ -30,22 +31,15 @@ public class Engine
 
 	public Engine()
 	{
-		this.midiInstrument = new MidiInstrument();
-		this.timeKeeper = midiInstrument;
-		this.players.put(0, new MidiPlayer(0, midiInstrument));
+		this.midiMonster = new MidiMonster(midiTransport);
+		this.timeKeeper = midiMonster;
+		this.players.put(0, new Player(new Robot(), new MidiInstrument(0, midiMonster)));
 	}
 
 	public void initialize()
 	{
 		LOGGER.info("Initializing engine...");
-		try
-		{
-			midiInstrument.initialize();
-		}
-		catch (MidiUnavailableException e)
-		{
-			throw new EngineFatalException("Failed to start midi spammer even with default device", e);
-		}
+		midiTransport.initialize();
 		LOGGER.info("Engine initialized");
 	}
 
@@ -57,7 +51,7 @@ public class Engine
 			return;
 		}
 
-		midiInstrument.createAndStartSequencer(this.players.size());
+		midiMonster.createAndStartSequencer(this.players.size());
 		LOGGER.info("Starting engine...");
 		processThread = new Thread(() -> {
 			while (running.get())
@@ -70,7 +64,7 @@ public class Engine
 					{
 						players.get(barPerTrack.getKey()).performBar(barPerTrack.getValue());
 					}
-					midiInstrument.notifyNextBarIsPopulated();
+					midiMonster.notifyNextBarIsPopulated();
 					LOGGER.info("Done populating");
 				}
 			}
@@ -86,7 +80,7 @@ public class Engine
 		}
 
 		LOGGER.info("Pausing engine...");
-		midiInstrument.stopSequencer();
+		midiMonster.stopSequencer();
 		try
 		{
 			processThread.join();
@@ -100,20 +94,23 @@ public class Engine
 	public void shutdown()
 	{
 		LOGGER.info("Stopping engine...");
-		this.running.set(false);
 		try
 		{
 			this.pause();
 		}
 		finally
 		{
-			midiInstrument.shutdown();
+			midiTransport.shutdown();
 		}
 	}
 
-	public MidiInstrument getMidiInstrument()
+	public MidiMonster getMidiMonster()
 	{
-		return midiInstrument;
+		return midiMonster;
 	}
 
+	public MidiTransport getMidiTransport()
+	{
+		return midiTransport;
+	}
 }

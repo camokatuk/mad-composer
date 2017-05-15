@@ -13,7 +13,7 @@ public class PlaybackController
 
 	public void setBpm(int bpm)
 	{
-		this.engine.getMidiInstrument().setBpm(bpm);
+		this.engine.getMidiMonster().setBpm(bpm);
 	}
 
 	public void start()
