@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface Composer
 {
-	Map<Integer, Bar> writeNextBar();
+	Map<Integer, Bar<Note>> writeNextBar();
 }

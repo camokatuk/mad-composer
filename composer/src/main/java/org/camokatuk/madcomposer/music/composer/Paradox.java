@@ -12,11 +12,11 @@ import org.camokatuk.madcomposer.music.Pitch;
 public class Paradox implements Composer
 {
 	@Override
-	public Map<Integer, Bar> writeNextBar()
+	public Map<Integer, Bar<Note>> writeNextBar()
 	{
-		Map<Integer, Bar> trackIdToBar = new HashMap<>();
+		Map<Integer, Bar<Note>> trackIdToBar = new HashMap<>();
 
-		Bar bar = new Bar();
+		Bar<Note> bar = new Bar<>();
 		bar.addNote(new Note(new Pitch("C", 1), Duration.quarter(1)), Duration.quarter(0));
 		bar.addNote(new Note(new Pitch("C", 1), Duration.quarter(1)), Duration.quarter(1));
 		bar.addNote(new Note(new Pitch("C", 1), Duration.quarter(1)), Duration.quarter(2));

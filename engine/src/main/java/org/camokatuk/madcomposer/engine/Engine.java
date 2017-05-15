@@ -11,6 +11,7 @@ import org.camokatuk.madcomposer.engine.midi.MidiMonster;
 import org.camokatuk.madcomposer.engine.midi.MidiTransport;
 import org.camokatuk.madcomposer.music.Bar;
 import org.camokatuk.madcomposer.music.Composer;
+import org.camokatuk.madcomposer.music.Note;
 import org.camokatuk.madcomposer.music.Performer;
 import org.camokatuk.madcomposer.music.composer.Paradox;
 import org.camokatuk.madcomposer.music.performer.Robot;
@@ -58,8 +59,8 @@ public class Engine
 				if (timeKeeper.isTimeToPlayNextBar())
 				{
 					LOGGER.info("Populating next bar...");
-					Map<Integer, Bar> score = composer.writeNextBar();
-					for (Map.Entry<Integer, Bar> barPerTrack : score.entrySet())
+					Map<Integer, Bar<Note>> score = composer.writeNextBar();
+					for (Map.Entry<Integer, Bar<Note>> barPerTrack : score.entrySet())
 					{
 						players.get(barPerTrack.getKey()).performBar(barPerTrack.getValue());
 					}
