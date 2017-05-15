@@ -1,11 +1,11 @@
 package org.camokatuk.madcomposer.music;
 
-public class Player
+public class Performer
 {
 	private final Personality personality;
 	private final Instrument instrument;
 
-	public Player(Personality personality, Instrument instrument)
+	public Performer(Personality personality, Instrument instrument)
 	{
 		this.personality = personality;
 		this.instrument = instrument;

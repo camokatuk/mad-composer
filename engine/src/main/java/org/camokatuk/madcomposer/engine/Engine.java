@@ -11,7 +11,7 @@ import org.camokatuk.madcomposer.engine.midi.MidiMonster;
 import org.camokatuk.madcomposer.engine.midi.MidiTransport;
 import org.camokatuk.madcomposer.music.Bar;
 import org.camokatuk.madcomposer.music.Composer;
-import org.camokatuk.madcomposer.music.Player;
+import org.camokatuk.madcomposer.music.Performer;
 import org.camokatuk.madcomposer.music.TimeKeeper;
 import org.camokatuk.madcomposer.music.composer.Paradox;
 import org.camokatuk.madcomposer.music.performer.Robot;
@@ -21,7 +21,7 @@ public class Engine
 	private static final Logger LOGGER = LogManager.getLogger(Engine.class);
 
 	private Composer composer = new Paradox();
-	private Map<Integer, Player> players = new HashMap<>();
+	private Map<Integer, Performer> players = new HashMap<>();
 	private MidiMonster midiMonster;
 	private MidiTransport midiTransport = new MidiTransport();
 
@@ -33,7 +33,7 @@ public class Engine
 	{
 		this.midiMonster = new MidiMonster(midiTransport);
 		this.timeKeeper = midiMonster;
-		this.players.put(0, new Player(new Robot(), new MidiInstrument(0, midiMonster)));
+		this.players.put(0, new Performer(new Robot(), new MidiInstrument(0, midiMonster)));
 	}
 
 	public void initialize()
