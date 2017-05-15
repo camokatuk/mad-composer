@@ -12,7 +12,6 @@ import org.camokatuk.madcomposer.engine.midi.MidiTransport;
 import org.camokatuk.madcomposer.music.Bar;
 import org.camokatuk.madcomposer.music.Composer;
 import org.camokatuk.madcomposer.music.Performer;
-import org.camokatuk.madcomposer.music.TimeKeeper;
 import org.camokatuk.madcomposer.music.composer.Paradox;
 import org.camokatuk.madcomposer.music.performer.Robot;
 

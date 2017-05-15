@@ -13,7 +13,7 @@ public class Performer
 
 	public void performBar(Bar<Note> bar)
 	{
-		instrument.performBar(personality.interpret(bar));
+		instrument.playBar(personality.interpret(bar));
 	}
 }
 

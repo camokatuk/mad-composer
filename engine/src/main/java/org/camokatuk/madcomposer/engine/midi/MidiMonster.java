@@ -15,7 +15,7 @@ import javax.sound.midi.Track;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.camokatuk.madcomposer.music.TimeKeeper;
+import org.camokatuk.madcomposer.engine.TimeKeeper;
 
 public class MidiMonster implements TimeKeeper
 {

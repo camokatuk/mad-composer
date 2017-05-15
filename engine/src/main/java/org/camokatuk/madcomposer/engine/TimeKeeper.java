@@ -1,4 +1,4 @@
-package org.camokatuk.madcomposer.music;
+package org.camokatuk.madcomposer.engine;
 
 public interface TimeKeeper
 {

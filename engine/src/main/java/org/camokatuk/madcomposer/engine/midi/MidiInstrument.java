@@ -22,7 +22,7 @@ public class MidiInstrument implements Instrument
 	}
 
 	@Override
-	public void performBar(Bar<InterpretedNote> interpretedBar)
+	public void playBar(Bar<InterpretedNote> interpretedBar)
 	{
 		for (Map.Entry<Duration, InterpretedNote> noteEntry : interpretedBar.getNotesByStart().entrySet())
 		{
