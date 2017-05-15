@@ -18,6 +18,7 @@ public class Paradox implements Composer
 
 		Bar<Note> bar = new Bar<>();
 		bar.addNote(new Note(new Pitch("C", 1), Duration.quarter(1)), Duration.quarter(0));
+		bar.addNote(new Note(new Pitch("D", 1), Duration.quarter(1)), Duration.quarter(0));
 		bar.addNote(new Note(new Pitch("C", 1), Duration.quarter(1)), Duration.quarter(1));
 		bar.addNote(new Note(new Pitch("C", 1), Duration.quarter(1)), Duration.quarter(2));
 		bar.addNote(new Note(new Pitch("C", 1), Duration.quarter(1)), Duration.quarter(3));
