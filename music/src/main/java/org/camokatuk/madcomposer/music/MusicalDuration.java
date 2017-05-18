@@ -7,8 +7,15 @@ public class MusicalDuration implements Comparable<MusicalDuration>
 
 	public MusicalDuration(int quant, int base)
 	{
-		this.quant = quant;
-		this.base = base;
+		int gcd = findGCD(quant, base);
+		this.quant = quant / gcd;
+		this.base = base / gcd;
+	}
+
+	private static int findGCD(int number1, int number2)
+	{
+		if (number2 == 0) { return number1; }
+		return findGCD(number2, number1 % number2);
 	}
 
 	public static MusicalDuration whole(int quant)
@@ -51,6 +58,16 @@ public class MusicalDuration implements Comparable<MusicalDuration>
 		return new MusicalDuration(quant, 12);
 	}
 
+	public MusicalDuration add(int quant, int base)
+	{
+		return new MusicalDuration(this.base * quant + this.quant * base, this.base * base);
+	}
+
+	public MusicalDuration add(MusicalDuration duration)
+	{
+		return new MusicalDuration(this.base * duration.quant + this.quant * duration.base, this.base * duration.base);
+	}
+
 	public int getQuant()
 	{
 		return quant;
@@ -65,5 +82,29 @@ public class MusicalDuration implements Comparable<MusicalDuration>
 	public int compareTo(MusicalDuration o)
 	{
 		return Integer.compare(quant * o.base, base * o.quant);
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{ return true; }
+		if (o == null || getClass() != o.getClass())
+		{ return false; }
+
+		MusicalDuration that = (MusicalDuration) o;
+
+		if (quant != that.quant)
+		{ return false; }
+		return base == that.base;
+
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int result = quant;
+		result = 31 * result + base;
+		return result;
 	}
 }

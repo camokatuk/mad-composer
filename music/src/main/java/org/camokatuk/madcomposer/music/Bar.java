@@ -30,7 +30,8 @@ public class Bar<OffsetDuration extends Comparable<OffsetDuration>, Event>
 		@Override
 		public int compareTo(TimedEvent o)
 		{
-			return offsetDuration.compareTo(o.offsetDuration);
+			int offsetComparison = offsetDuration.compareTo(o.offsetDuration);
+			return offsetComparison != 0 ? offsetComparison : Integer.compare(event.hashCode(), o.event.hashCode());
 		}
 
 		@Override

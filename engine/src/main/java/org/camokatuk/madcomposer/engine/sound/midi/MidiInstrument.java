@@ -25,14 +25,14 @@ public class MidiInstrument implements Instrument
 	@Override
 	public void playBar(Bar<MusicalDuration, InterpretedNote> interpretedBar)
 	{
-		// TODO avoid clashes after shuffle
-		interpretedBar.traverse(interpretedNoteEvent ->
-		{
+		interpretedBar.traverse(interpretedNoteEvent -> {
 			MusicalDuration offset = interpretedNoteEvent.getOffset();
 			InterpretedNote interpretedNote = interpretedNoteEvent.getEvent();
 
 			long durationTicks = durationInTicks(interpretedNote.getNote().getDuration());
-			long durationTicksAfterShuffle = durationTicks - 16; //applyShuffle(durationTicks, interpretedNote.getShuffle());
+
+			// TODO looks like clashes on the same note are not the problem, but fucking watch out for this shit
+			long durationTicksAfterShuffle = durationTicks; //applyShuffle(durationTicks, interpretedNote.getShuffle());
 
 			long noteStartTimeInTicks = (MidiConstants.TICKS_PER_BAR / offset.getBase() * offset.getQuant());
 			long startTicksAfterShuffle = applyShuffle(noteStartTimeInTicks, interpretedNote.getShuffle());

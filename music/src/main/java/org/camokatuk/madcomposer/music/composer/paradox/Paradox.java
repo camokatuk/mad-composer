@@ -1,4 +1,4 @@
-package org.camokatuk.madcomposer.music.composer;
+package org.camokatuk.madcomposer.music.composer.paradox;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +18,7 @@ public class Paradox implements Composer
 
 		Bar<MusicalDuration, PlayableNote> bar = new Bar<>();
 		bar.addEvent(new PlayableNote(new Pitch("C", 1), MusicalDuration.quarter(1)), MusicalDuration.quarter(0));
-		bar.addEvent(new PlayableNote(new Pitch("D", 1), MusicalDuration.quarter(1)), MusicalDuration.quarter(0));
-		bar.addEvent(new PlayableNote(new Pitch("C", 1), MusicalDuration.quarter(1)), MusicalDuration.quarter(1));
+		bar.addEvent(new PlayableNote(new Pitch("D", 1), MusicalDuration.quarter(1)), MusicalDuration.quarter(1));
 		bar.addEvent(new PlayableNote(new Pitch("C", 1), MusicalDuration.quarter(1)), MusicalDuration.quarter(2));
 		bar.addEvent(new PlayableNote(new Pitch("C", 1), MusicalDuration.quarter(1)), MusicalDuration.quarter(3));
 		trackIdToBar.put(0, bar);
