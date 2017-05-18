@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.camokatuk.mad-composer</groupId>
+		<groupId>org.camokatuk.madcomposer</groupId>
 		<artifactId>parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
@@ -15,8 +15,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.camokatuk.mad-composer</groupId>
-			<artifactId>composer</artifactId>
+			<groupId>org.camokatuk.madcomposer</groupId>
+			<artifactId>music</artifactId>
 			<version>${mad.version}</version>
 		</dependency>
 	</dependencies>

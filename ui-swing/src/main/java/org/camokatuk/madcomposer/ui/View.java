@@ -3,17 +3,17 @@ package org.camokatuk.madcomposer.ui;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
+import org.camokatuk.madcomposer.engine.control.ApplicationControlRoom;
 
 public class View
 {
-	private final EngineControlRoom engineControlRoom;
+	private final ApplicationControlRoom applicationControlRoom;
 	private final MainFrame mainFrame;
 
-	public View(EngineControlRoom engineControlRoom)
+	public View(ApplicationControlRoom applicationControlRoom)
 	{
-		this.engineControlRoom = engineControlRoom;
-		this.mainFrame = new MainFrame(engineControlRoom);
+		this.applicationControlRoom = applicationControlRoom;
+		this.mainFrame = new MainFrame(applicationControlRoom);
 	}
 
 	public void initialize()
@@ -34,7 +34,7 @@ public class View
 
 	public void destroy()
 	{
-		engineControlRoom.stopEngine();
+		applicationControlRoom.stopEngine();
 		mainFrame.dispose();
 	}
 

@@ -1,12 +1,12 @@
 package org.camokatuk.madcomposer.engine.control;
 
-import org.camokatuk.madcomposer.engine.Engine;
+import org.camokatuk.madcomposer.engine.MadEngine;
 
 public class StateMonitor
 {
-	private Engine engine;
+	private MadEngine engine;
 
-	public StateMonitor(Engine engine)
+	public StateMonitor(MadEngine engine)
 	{
 		this.engine = engine;
 	}
@@ -14,6 +14,6 @@ public class StateMonitor
 	// might involve some realtime multithread stuff
 	public int getBpm()
 	{
-		return engine.getMidiMonster().getBpm();
+		return engine.getBpm();
 	}
 }

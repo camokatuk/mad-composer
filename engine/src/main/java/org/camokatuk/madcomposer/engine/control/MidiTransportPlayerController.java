@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.sound.midi.MidiDevice;
 
-import org.camokatuk.madcomposer.engine.midi.MidiTransport;
+import org.camokatuk.madcomposer.engine.sound.midi.MidiTransport;
 
 public class MidiTransportPlayerController
 {

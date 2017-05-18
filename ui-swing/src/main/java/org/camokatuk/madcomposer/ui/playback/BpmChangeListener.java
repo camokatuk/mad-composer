@@ -4,14 +4,14 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
-import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
+import org.camokatuk.madcomposer.engine.control.ApplicationControlRoom;
 import org.camokatuk.madcomposer.engine.control.PlaybackController;
 
 public class BpmChangeListener implements DocumentListener
 {
 	private PlaybackController playbackController;
 
-	public BpmChangeListener(EngineControlRoom controlRoom)
+	public BpmChangeListener(ApplicationControlRoom controlRoom)
 	{
 		this.playbackController = controlRoom.getPlaybackController();
 	}

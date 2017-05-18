@@ -10,14 +10,14 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
+import org.camokatuk.madcomposer.engine.control.ApplicationControlRoom;
 import org.camokatuk.madcomposer.ui.playback.BpmChangeListener;
 
 public class MainFrame extends JFrame
 {
-	private final EngineControlRoom controlRoom;
+	private final ApplicationControlRoom controlRoom;
 
-	public MainFrame(EngineControlRoom controlRoom)
+	public MainFrame(ApplicationControlRoom controlRoom)
 	{
 		this.controlRoom = controlRoom;
 		this.initialize();
@@ -29,7 +29,7 @@ public class MainFrame extends JFrame
 		this.pack();
 	}
 
-	private void addPlaybackControls(EngineControlRoom controlRoom)
+	private void addPlaybackControls(ApplicationControlRoom controlRoom)
 	{
 		final JToolBar toolBar = new JToolBar();
 

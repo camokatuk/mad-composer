@@ -1,19 +1,17 @@
 package org.camokatuk.madcomposer;
 
-import org.camokatuk.madcomposer.engine.Engine;
-import org.camokatuk.madcomposer.engine.control.EngineControlRoom;
+import org.camokatuk.madcomposer.engine.Application;
+import org.camokatuk.madcomposer.engine.DefaultApplicationConfig;
 import org.camokatuk.madcomposer.ui.View;
 
 public class Main
 {
 	public static void main(String[] sd)
 	{
-		Engine engine = new Engine();
-		EngineControlRoom controlRoom = new EngineControlRoom(engine);
+		Application application = new Application();
+		application.initialize(new DefaultApplicationConfig());
 
-		controlRoom.startEngine();
-
-		View view = new View(controlRoom);
+		View view = new View(application.getApplicationControlRoom());
 		view.initialize();
 	}
 }

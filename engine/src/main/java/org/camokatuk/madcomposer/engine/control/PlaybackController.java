@@ -1,19 +1,19 @@
 package org.camokatuk.madcomposer.engine.control;
 
-import org.camokatuk.madcomposer.engine.Engine;
+import org.camokatuk.madcomposer.engine.MadEngine;
 
 public class PlaybackController
 {
-	private Engine engine;
+	private MadEngine engine;
 
-	public PlaybackController(Engine engine)
+	public PlaybackController(MadEngine engine)
 	{
 		this.engine = engine;
 	}
 
 	public void setBpm(int bpm)
 	{
-		this.engine.getMidiMonster().setBpm(bpm);
+		this.engine.setBpm(bpm);
 	}
 
 	public void start()
