@@ -1,7 +1,12 @@
 package org.camokatuk.madcomposer.music.composer.testdrummer;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.camokatuk.madcomposer.music.Bar;
 import org.camokatuk.madcomposer.music.Composer;
@@ -24,8 +29,16 @@ public class TestDrummer implements Composer
 	{
 		Map<Integer, Bar<MusicalDuration, PlayableNote>> trackIdToBar = new HashMap<>();
 
-		Phrase phrase1 = Phrase.parse("K....K..K/S..K.S...K....");
-		trackIdToBar.put(0, phrase1.toBar(drumHitMap));
+		final String phrase1 = "K..K..S..K..";
+		final String phrase2 = "K....K..S..";
+		final String phrase3 = "K...S...K..";
+		final String phrase4 = "S...K...S..";
+		final String phrase5 = "S.S..S.";
+
+		List<String> phrases = new LinkedList<>(Arrays.asList(phrase1, phrase2, phrase3, phrase4, phrase5));
+		Collections.shuffle(phrases);
+		Phrase phrase = Phrase.parse(phrases.stream().collect(Collectors.joining()));
+		trackIdToBar.put(0, phrase.toOneBar(drumHitMap));
 
 		return trackIdToBar;
 	}

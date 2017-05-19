@@ -68,6 +68,16 @@ public class MusicalDuration implements Comparable<MusicalDuration>
 		return new MusicalDuration(this.base * duration.quant + this.quant * duration.base, this.base * duration.base);
 	}
 
+	public MusicalDuration toBarOffset()
+	{
+		return new MusicalDuration(this.quant % this.base, this.base);
+	}
+
+	public boolean notLongerThanBar()
+	{
+		return quant < base;
+	}
+
 	public int getQuant()
 	{
 		return quant;

@@ -51,14 +51,17 @@ public class Phrase
 		return phrase;
 	}
 
-	public <E> Bar<MusicalDuration, E> toBar(Map<Character, E> tokenToEvent)
+	public <E> Bar<MusicalDuration, E> toOneBar(Map<Character, E> tokenToEvent)
 	{
 		Bar<MusicalDuration, E> bar = new Bar<>();
 		for (Map.Entry<Character, List<MusicalDuration>> eventsEntry : events.entrySet())
 		{
 			E event = tokenToEvent.get(eventsEntry.getKey());
-			eventsEntry.getValue().forEach(duration -> bar.addEvent(event, duration));
+			eventsEntry.getValue().stream().filter(MusicalDuration::notLongerThanBar).forEach(duration -> bar.addEvent(event, duration));
 		}
 		return bar;
 	}
+
+	//	public <E> Bar<MusicalDuration, E> toBars(Map<Character, E> tokenToEvent) ... TODO
+
 }

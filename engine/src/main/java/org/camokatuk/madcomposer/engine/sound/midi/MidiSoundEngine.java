@@ -79,7 +79,7 @@ public class MidiSoundEngine implements SoundEngine<MidiSoundEngineEvent>
 			long nextBarStartTick = currentBar.get() * MidiConstants.TICKS_PER_BAR;
 			long absoluteStartInTicks = nextBarStartTick + nextBarOffsetTicks;
 
-			LOGGER.info("Scheduling note at " + absoluteStartInTicks + " - " + (absoluteStartInTicks + midiNote.getDurationTicks()));
+			LOGGER.debug("Scheduling note at " + absoluteStartInTicks + " - " + (absoluteStartInTicks + midiNote.getDurationTicks()));
 			sequence.getTracks()[trackId].add(new MidiEvent(onMessage, absoluteStartInTicks));
 			sequence.getTracks()[trackId].add(new MidiEvent(offMessage, absoluteStartInTicks + midiNote.getDurationTicks()));
 		}
