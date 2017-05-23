@@ -88,6 +88,11 @@ public class MusicalDuration implements Comparable<MusicalDuration>
 		return base;
 	}
 
+	public int lengthInBars()
+	{
+		return this.quant / this.base + 1;
+	}
+
 	@Override
 	public int compareTo(MusicalDuration o)
 	{

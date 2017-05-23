@@ -1,11 +1,13 @@
 package org.camokatuk.madcomposer.music.composer.testdrummer;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.camokatuk.madcomposer.music.Bar;
 import org.camokatuk.madcomposer.music.MusicalDuration;
@@ -60,6 +62,28 @@ public class Phrase
 			eventsEntry.getValue().stream().filter(MusicalDuration::notLongerThanBar).forEach(duration -> bar.addEvent(event, duration));
 		}
 		return bar;
+	}
+
+	public List<Phrase> split()
+	{
+		int maxLength = this.events.values().stream().mapToInt(e -> e.stream().mapToInt(MusicalDuration::lengthInBars).max().getAsInt()).max()
+			.getAsInt();
+		Phrase[] result = Stream.generate(Phrase::new).limit(maxLength).toArray(Phrase[]::new);
+
+		for (Map.Entry<Character, List<MusicalDuration>> entry : this.events.entrySet())
+		{
+			Character token = entry.getKey();
+			for (MusicalDuration duration : entry.getValue())
+			{
+				int barNumber = duration.getQuant() / duration.getBase();
+				Phrase phrase = result[barNumber];
+
+				List<MusicalDuration> durations = phrase.events.getOrDefault(token, new LinkedList<>());
+				durations.add(new MusicalDuration(duration.getQuant() % duration.getBase(), duration.getBase())); // remove bar offset
+				phrase.events.put(token, durations);
+			}
+		}
+		return Arrays.asList(result);
 	}
 
 	//	public <E> Bar<MusicalDuration, E> toBars(Map<Character, E> tokenToEvent) ... TODO
